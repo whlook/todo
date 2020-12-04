@@ -70,6 +70,9 @@ try {
   var ret = require('../lib/cli/' + command)(argv, todos);
   coord.emit(command, ret);
 } catch(e) {
-  if ('MODULE_NOT_FOUND' !== e.code) throw e;
-  throw new Error('Unrecognized command "' + command + '"');
+  arg = argv.args.pop();
+  argv.commands.push(arg);
+  require('../lib/cli/add')(argv, todos);
+  //if ('MODULE_NOT_FOUND' !== e.code) throw e;
+  //throw new Error('Unrecognized command "' + command + '"');
 }
