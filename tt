@@ -1,0 +1,49 @@
+#!/bin/bash
+cmd=$1
+
+jsonfile=".todo-db.json"
+jsondir="/home/username/"
+syncdir="/home/username/.todosync/"
+
+#if [ "$cmd" != "" ] && [ "$cmd" != "ls" ];then
+#       if [ ! -f "$json_file_tmp" ];then
+#       	cp $json_file $json_file_tmp 
+#       fi
+#       file_ts=`date +%s -r $json_file_tmp`
+#       now_ts=`date +%s`
+#       ts_dif=$[ now_ts-file_ts ]
+#       if [ $ts_dif -gt 60 ];then
+#       	cp $json_file $json_file_tmp 
+#       fi
+#
+#fi
+
+set -e 
+
+push(){
+	ts=`date +"%Y-%m-%d %H:%M:%S"`
+	cd $syncdir
+       	git pull  --rebase > /dev/null 2>&1
+	cp $jsondir/$jsonfile .
+	git add $jsonfile
+	git commit -m "$USER pushed at $ts"
+	git push > /dev/null 2>&1
+}
+
+pull(){
+	cd $syncdir
+	git pull  --rebase > /dev/null 2>&1
+	cp $jsonfile $jsondir
+}
+
+if [ "$cmd" = "push" ];then
+	push
+	exit 0
+fi
+if [ "$cmd" = "pull" ];then
+	pull
+	exit 0
+fi
+
+todo $@
+
